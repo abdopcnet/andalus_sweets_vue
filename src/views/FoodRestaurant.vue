@@ -2,12 +2,12 @@
   <!-----        Food restaurant page-->
   <section class="hero-section">
     <div class="food-slider">
-      <img src="../assets/chicken.png" alt="طبق الأكل" class="hero-image active" />
-      <img src="../assets/food11.jpg" alt="طبق الأكل" class="hero-image" />
+      <img src="../assets/food15.jpg" alt="طبق الأكل" class="hero-image active" />
+      <img src="../assets/food14.jpg" alt="طبق الأكل" class="hero-image" />
       <img src="../assets/food13.jpg" alt="طبق الأكل" class="hero-image" />
       <img src="../assets/food12.jpg" alt="طبق الأكل" class="hero-image" />
     </div>
-    
+
     <div class="hero-content">
       <h1 class="hero-title">
         مذاق النبلاء .... <br />
@@ -45,27 +45,28 @@
     <!-- Category Products Section -->
     <section v-if="selectedCategory" id="products-section" class="category-products-section">
       <div class="category-video-container">
-        <video 
+        <video
           :key="selectedCategory"
-          class="category-video" 
-          :src="getCategoryVideo(selectedCategory)" 
-          autoplay 
-          loop 
-          muted 
-          playsinline>
-        </video>
+          class="category-video"
+          :src="getCategoryVideo(selectedCategory)"
+          autoplay
+          loop
+          muted
+          playsinline
+        ></video>
       </div>
 
       <img src="../assets/banner5.png" class="caption-image" />
-      
+
       <h2 class="category-title">{{ selectedCategory }}</h2>
 
       <div class="container" id="pruducts-section">
-        <div 
-          class="card" 
-          v-for="product in filteredProducts" 
+        <div
+          class="card"
+          v-for="product in filteredProducts"
           :key="product.id"
-          :class="`card-${(product.id % 6) + 1}`">
+          :class="`card-${(product.id % 6) + 1}`"
+        >
           <div class="card-info">
             <p>{{ product.name }}</p>
             <p>{{ product.price }} ريال</p>
@@ -83,11 +84,12 @@
     <section v-else>
       <img src="../assets/banner5.png" class="caption-image" />
       <div class="container" id="pruducts-section">
-        <div 
-          class="card" 
-          v-for="product in products.slice(0, 8)" 
+        <div
+          class="card"
+          v-for="product in products.slice(0, 8)"
           :key="product.id"
-          :class="`card-${(product.id % 6) + 1}`">
+          :class="`card-${(product.id % 6) + 1}`"
+        >
           <div class="card-info">
             <p>{{ product.name }}</p>
             <p>{{ product.price }} ريال</p>
@@ -129,21 +131,21 @@ export default {
         { id: 11, name: 'متبل', price: 15, category: 'مقبلات', image: '../assets/food3.png' },
         { id: 12, name: 'فطيرة جبن', price: 25, category: 'فطائر', image: '../assets/food1.png' },
         { id: 13, name: 'فطيرة زعتر', price: 20, category: 'فطائر', image: '../assets/food2.jpg' },
-        { id: 14, name: 'فطيرة لحم', price: 30, category: 'فطائر', image: '../assets/food3.png' }
+        { id: 14, name: 'فطيرة لحم', price: 30, category: 'فطائر', image: '../assets/food3.png' },
       ],
       categoryVideos: {
-        'مقبلات': '../assets/food-video1.mp4',
-        'لحوم': '../assets/food-video2.mp4',
-        'دواجن': '../assets/food-video3.mp4',
-        'فطائر': '../assets/food-video4.mp4'
-      }
+        مقبلات: '../assets/food-video1.mp4',
+        لحوم: '../assets/food-video2.mp4',
+        دواجن: '../assets/food-video3.mp4',
+        فطائر: '../assets/food-video4.mp4',
+      },
     }
   },
   computed: {
     filteredProducts() {
       if (!this.selectedCategory) return this.products
-      return this.products.filter(p => p.category === this.selectedCategory)
-    }
+      return this.products.filter((p) => p.category === this.selectedCategory)
+    },
   },
   methods: {
     selectCategory(category) {
@@ -157,22 +159,22 @@ export default {
     },
     getCategoryVideo(category) {
       return this.categoryVideos[category] || '../assets/chicken.png'
-    }
+    },
   },
   mounted() {
     // تغيير العنوان في المتصفح
     document.title = 'مذاق النبلاء - اسم مطعمك'
-    
+
     // Slider animation
-    const images = document.querySelectorAll('.hero-image');
-    let index = 0;
+    const images = document.querySelectorAll('.hero-image')
+    let index = 0
 
     setInterval(() => {
-      images[index].classList.remove('active');
-      index = (index + 1) % images.length;
-      images[index].classList.add('active');
-    }, 2000);
-  }
+      images[index].classList.remove('active')
+      index = (index + 1) % images.length
+      images[index].classList.add('active')
+    }, 2000)
+  },
 }
 </script>
 
@@ -200,7 +202,7 @@ export default {
     height: 92vh;
     overflow: hidden;
   }
-  
+
   .hero-image {
     position: absolute;
     top: 0;
@@ -211,7 +213,7 @@ export default {
     opacity: 0;
     transition: opacity 1s ease-in-out;
   }
-  
+
   .hero-image.active {
     opacity: 1;
   }
@@ -251,7 +253,9 @@ export default {
     align-items: center;
     gap: 10px;
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition:
+      transform 0.3s ease,
+      box-shadow 0.3s ease;
   }
 
   .order-button--fixed:hover {
@@ -277,7 +281,7 @@ export default {
     gap: 20px;
     background-color: #fcfcfc;
   }
-  
+
   .hero-content {
     max-width: 100%;
     margin: 0;
@@ -291,7 +295,7 @@ export default {
     text-shadow: none;
     font-size: clamp(24px, 6vw, 40px);
   }
-  
+
   .food-slider {
     width: 100%;
     max-width: 400px;
@@ -310,7 +314,7 @@ export default {
     opacity: 0;
     transition: opacity 1s ease-in-out;
   }
-  
+
   .hero-image.active {
     opacity: 1;
   }
@@ -332,7 +336,9 @@ export default {
     justify-content: center !important;
     gap: 10px !important;
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3) !important;
-    transition: transform 0.3s ease, box-shadow 0.3s ease !important;
+    transition:
+      transform 0.3s ease,
+      box-shadow 0.3s ease !important;
     width: auto !important;
     min-width: 200px !important;
   }
@@ -355,11 +361,11 @@ export default {
   .hero-title {
     font-size: clamp(20px, 7vw, 32px);
   }
-  
+
   .food-slider {
     height: 200px;
   }
-  
+
   .order-button--fixed {
     padding: 12px 30px;
     font-size: 1.4em;
@@ -603,11 +609,11 @@ hr {
     gap: 1.2rem;
     padding: 1.5rem;
   }
-  
+
   .card {
     min-height: 250px;
   }
-  
+
   .caption-image {
     width: 35vw;
   }
@@ -619,24 +625,24 @@ hr {
     gap: 1rem;
     padding: 1rem;
   }
-  
+
   .card {
     min-height: 220px;
   }
-  
+
   .card-info {
     margin-top: 10vh;
   }
-  
+
   .card p {
     font-size: 1.2em;
   }
-  
+
   .card button {
     font-size: 1.2em;
     padding: 0.4rem 1.5rem;
   }
-  
+
   .caption-image {
     width: 50vw;
     max-width: 250px;
@@ -654,17 +660,17 @@ hr {
     gap: 1rem;
     padding: 1rem;
   }
-  
+
   .card {
     min-height: 200px;
     max-width: 400px;
     margin: 0 auto;
   }
-  
+
   .card-info {
     margin-top: 8vh;
   }
-  
+
   .caption-image {
     width: 60vw;
   }
