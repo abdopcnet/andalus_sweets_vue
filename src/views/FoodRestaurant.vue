@@ -1,5 +1,5 @@
 <template>
-  <!-----        Food resturant page-->
+  <!-----        Food restaurant page-->
   <section class="hero-section">
     <div class="food-slider">
       <img src="../assets/chicken.png" alt="طبق الأكل" class="hero-image active" />
@@ -14,60 +14,93 @@
         كل وجبة حكاية من التميز
       </h1>
 
-      <a href="#pruducts-section">
-      <button class="order-button order-button--fixed">
-        اطلب الآن<img src="../assets/Vectorcart.png" alt="" />
-      </button>
-    </a>
+      <a href="#products-section">
+        <button class="order-button order-button--fixed">
+          اطلب الآن<img src="../assets/Vectorcart.png" alt="" />
+        </button>
+      </a>
     </div>
   </section>
 
-
   <section class="content">
-   
-
     <section class="parts-section">
       <img src="../assets/bannar1.png" alt="border" class="caption-image" />
 
       <div class="container">
-        <div class="card card-1">
+        <div class="card card-1" @click="selectCategory('مقبلات')">
           <button>مقبلات</button>
         </div>
-        <div class="card card-2">
+        <div class="card card-2" @click="selectCategory('لحوم')">
           <button>لحوم</button>
         </div>
-        <div class="card card-3">
+        <div class="card card-3" @click="selectCategory('دواجن')">
           <button>دواجن</button>
         </div>
-        <div class="card card-4">
+        <div class="card card-4" @click="selectCategory('فطائر')">
           <button>فطائر</button>
         </div>
       </div>
     </section>
 
-   <img src="../assets/banner5.png" class="caption-image" />
-<div class="container" id="pruducts-section">
-  <div 
-    class="card" 
-    v-for="product in products" 
-    :key="product.id"
-    :class="`card-${(product.id % 6) + 1}`">
-    <div class="card-info">
-      <p>{{ product.name }}</p>
-      <p>{{ product.price }} ريال</p>
-    </div>
-    <button @click="addToCart(product)">أضف</button>
-  </div>
-</div>
+    <!-- Category Products Section -->
+    <section v-if="selectedCategory" id="products-section" class="category-products-section">
+      <div class="category-video-container">
+        <video 
+          :key="selectedCategory"
+          class="category-video" 
+          :src="getCategoryVideo(selectedCategory)" 
+          autoplay 
+          loop 
+          muted 
+          playsinline>
+        </video>
+      </div>
 
-<router-link to="/food-restaurant">
-  <button class="more-btn">عرض المزيد</button>
-</router-link>
+      <img src="../assets/banner5.png" class="caption-image" />
+      
+      <h2 class="category-title">{{ selectedCategory }}</h2>
 
+      <div class="container" id="pruducts-section">
+        <div 
+          class="card" 
+          v-for="product in filteredProducts" 
+          :key="product.id"
+          :class="`card-${(product.id % 6) + 1}`">
+          <div class="card-info">
+            <p>{{ product.name }}</p>
+            <p>{{ product.price }} ريال</p>
+          </div>
+          <button @click="addToCart(product)">أضف</button>
+        </div>
+      </div>
 
+      <router-link to="/food-restaurant">
+        <button class="more-btn">عرض المزيد من {{ selectedCategory }}</button>
+      </router-link>
+    </section>
+
+    <!-- Default Products Section (when no category selected) -->
+    <section v-else>
+      <img src="../assets/banner5.png" class="caption-image" />
+      <div class="container" id="pruducts-section">
+        <div 
+          class="card" 
+          v-for="product in products.slice(0, 8)" 
+          :key="product.id"
+          :class="`card-${(product.id % 6) + 1}`">
+          <div class="card-info">
+            <p>{{ product.name }}</p>
+            <p>{{ product.price }} ريال</p>
+          </div>
+          <button @click="addToCart(product)">أضف</button>
+        </div>
+      </div>
+
+      <router-link to="/food-restaurant">
+        <button class="more-btn">عرض المزيد</button>
+      </router-link>
+    </section>
   </section>
-
-
 </template>
 
 <script>
@@ -81,16 +114,49 @@ export default {
   },
   data() {
     return {
+      selectedCategory: null,
       products: [
-        { id: 1, name: 'أرز دجاج', price: 45, image: '../assets/food1.png' },
-        { id: 2, name: 'كبسة لحم', price: 55, image: '../assets/food3.png' },
-        { id: 3, name: 'مندي دجاج', price: 40, image: '../assets/food2.jpg' },
-        { id: 4, name: 'مظبي لحم', price: 60, image: '../assets/food3.png' },
-        { id: 5, name: 'برياني دجاج', price: 38, image: '../assets/food1.png' },
-        { id: 6, name: 'مشوي مشكل', price: 70, image: '../assets/food2.jpg' },
-        { id: 7, name: 'دجاج مشوي', price: 35, image: '../assets/food3.png' },
-        { id: 8, name: 'ريش مشوي', price: 65, image: '../assets/food3.jpg' }
-      ]
+        { id: 1, name: 'أرز دجاج', price: 45, category: 'دواجن', image: '../assets/food1.png' },
+        { id: 2, name: 'كبسة لحم', price: 55, category: 'لحوم', image: '../assets/food3.png' },
+        { id: 3, name: 'مندي دجاج', price: 40, category: 'دواجن', image: '../assets/food2.jpg' },
+        { id: 4, name: 'مظبي لحم', price: 60, category: 'لحوم', image: '../assets/food3.png' },
+        { id: 5, name: 'برياني دجاج', price: 38, category: 'دواجن', image: '../assets/food1.png' },
+        { id: 6, name: 'مشوي مشكل', price: 70, category: 'لحوم', image: '../assets/food2.jpg' },
+        { id: 7, name: 'دجاج مشوي', price: 35, category: 'دواجن', image: '../assets/food3.png' },
+        { id: 8, name: 'ريش مشوي', price: 65, category: 'لحوم', image: '../assets/food3.jpg' },
+        { id: 9, name: 'حمص باللحمة', price: 30, category: 'مقبلات', image: '../assets/food1.png' },
+        { id: 10, name: 'فتوش', price: 20, category: 'مقبلات', image: '../assets/food2.jpg' },
+        { id: 11, name: 'متبل', price: 15, category: 'مقبلات', image: '../assets/food3.png' },
+        { id: 12, name: 'فطيرة جبن', price: 25, category: 'فطائر', image: '../assets/food1.png' },
+        { id: 13, name: 'فطيرة زعتر', price: 20, category: 'فطائر', image: '../assets/food2.jpg' },
+        { id: 14, name: 'فطيرة لحم', price: 30, category: 'فطائر', image: '../assets/food3.png' }
+      ],
+      categoryVideos: {
+        'مقبلات': '../assets/food-video1.mp4',
+        'لحوم': '../assets/food-video2.mp4',
+        'دواجن': '../assets/food-video3.mp4',
+        'فطائر': '../assets/food-video4.mp4'
+      }
+    }
+  },
+  computed: {
+    filteredProducts() {
+      if (!this.selectedCategory) return this.products
+      return this.products.filter(p => p.category === this.selectedCategory)
+    }
+  },
+  methods: {
+    selectCategory(category) {
+      this.selectedCategory = category
+      this.$nextTick(() => {
+        const section = document.getElementById('products-section')
+        if (section) {
+          section.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        }
+      })
+    },
+    getCategoryVideo(category) {
+      return this.categoryVideos[category] || '../assets/chicken.png'
     }
   },
   mounted() {
@@ -305,23 +371,94 @@ export default {
   }
 }
 
+/******************************** Category Products Section *************** */
+.category-products-section {
+  scroll-margin-top: 20px;
+  animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.category-video-container {
+  width: 100%;
+  height: 30vh;
+  overflow: hidden;
+  margin: 2rem 0;
+  border-radius: 0;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.category-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.category-title {
+  text-align: center;
+  font-size: 3em;
+  color: #ff6f00;
+  margin: 2rem 0;
+  font-weight: bold;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+@media screen and (max-width: 768px) {
+  .category-video-container {
+    height: 25vh;
+    margin: 1.5rem 0;
+  }
+
+  .category-title {
+    font-size: 2.2em;
+    margin: 1.5rem 0;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .category-video-container {
+    height: 20vh;
+    margin: 1rem 0;
+  }
+
+  .category-title {
+    font-size: 1.8em;
+    margin: 1rem 0;
+  }
+}
+
 .more-btn {
   background-color: #fff;
   color: #ff6f00;
   border: none;
   border: #ff6f00 1px solid;
-  padding: 5px 30px;
-  border-radius: 5px;
-  font-size: 1.4em;
+  padding: 0.8rem 2.5rem;
+  border-radius: 10px;
+  font-size: 1.5em;
+  font-weight: bold;
   cursor: pointer;
   align-items: center;
   text-align: center;
-  transition:
-    transform 180ms ease,
-    box-shadow 180ms ease,
-    background-color 180ms ease;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
-  will-change: transform;
+  margin: 2rem auto;
+  display: block;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.more-btn:hover {
+  background-color: #ff6f00;
+  color: #fff;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 18px rgba(255, 111, 0, 0.3);
 }
 
 /******************************** cards *************** */
@@ -348,12 +485,16 @@ hr {
   padding: 2rem;
   direction: rtl;
   margin-bottom: 1.5rem;
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .caption-image {
   width: 25vw;
   max-width: 300px;
   height: auto;
+  margin: 2rem 0;
 }
 
 .card {
@@ -368,6 +509,13 @@ hr {
   min-height: 300px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 8px 20px rgba(255, 111, 0, 0.3);
 }
 
 .card::before {
@@ -384,6 +532,11 @@ hr {
   opacity: 0.35;
   pointer-events: none;
   z-index: 1;
+  transition: opacity 0.3s ease;
+}
+
+.card:hover::before {
+  opacity: 0.5;
 }
 
 .card > * {
@@ -425,19 +578,22 @@ hr {
   background: #fff;
   color: #ff6f00;
   border: none;
-  padding: 0.5rem 2rem;
-  border-radius: 5px;
+  padding: 0.6rem 2.2rem;
+  border-radius: 8px;
   cursor: pointer;
   margin-top: auto;
   font-size: 1.5em;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .card button:hover,
 .card button:focus {
-  transform: translateY(-10px);
-  transition: 0.3s ease-out;
-  background-color: #ff6f005b;
+  transform: translateY(-3px);
+  background-color: #ff6f00;
   color: #fff;
+  box-shadow: 0 4px 12px rgba(255, 111, 0, 0.4);
 }
 
 /* Responsive cards */
@@ -485,6 +641,11 @@ hr {
     width: 50vw;
     max-width: 250px;
   }
+
+  .more-btn {
+    font-size: 1.3em;
+    padding: 0.7rem 2rem;
+  }
 }
 
 @media (max-width: 480px) {
@@ -496,6 +657,8 @@ hr {
   
   .card {
     min-height: 200px;
+    max-width: 400px;
+    margin: 0 auto;
   }
   
   .card-info {
@@ -504,6 +667,11 @@ hr {
   
   .caption-image {
     width: 60vw;
+  }
+
+  .more-btn {
+    font-size: 1.2em;
+    padding: 0.6rem 1.8rem;
   }
 }
 
@@ -515,6 +683,9 @@ hr {
   margin-bottom: 5vh;
   align-items: center;
   justify-content: center;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
 }
 
 @media (max-width: 768px) {
